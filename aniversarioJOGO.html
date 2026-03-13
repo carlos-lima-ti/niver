@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Missão Aniversário 🎮</title>
+
+<style>
+
+body{
+font-family:Arial;
+background:linear-gradient(135deg,#7b2cbf,#9d4edd,#c77dff);
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+margin:0;
+color:white;
+overflow:hidden;
+}
+
+.container{
+background:white;
+color:black;
+padding:40px;
+border-radius:20px;
+width:450px;
+text-align:center;
+box-shadow:0 15px 40px rgba(0,0,0,0.3);
+}
+
+.progress{
+width:100%;
+background:#ddd;
+border-radius:20px;
+height:20px;
+margin-bottom:20px;
+overflow:hidden;
+}
+
+.progress-bar{
+height:100%;
+width:0%;
+background:#7b2cbf;
+transition:0.5s;
+}
+
+.expression{
+font-size:26px;
+background:#f2f2f2;
+padding:20px;
+border-radius:10px;
+margin:20px 0;
+font-weight:bold;
+}
+
+input{
+width:100%;
+padding:15px;
+font-size:20px;
+text-align:center;
+border-radius:10px;
+border:2px solid #ccc;
+}
+
+button{
+margin-top:20px;
+padding:15px 40px;
+font-size:20px;
+border:none;
+border-radius:40px;
+background:#7b2cbf;
+color:white;
+cursor:pointer;
+}
+
+button:hover{
+background:#5a189a;
+}
+
+.bigName{
+font-size:clamp(40px,10vw,90px);
+font-weight:bold;
+text-align:center;
+max-width:90%;
+margin:auto;
+word-wrap:break-word;
+animation:glow 2s infinite;
+}
+
+@keyframes glow{
+0%{text-shadow:0 0 10px #fff}
+50%{text-shadow:0 0 40px #ffd700}
+100%{text-shadow:0 0 10px #fff}
+}
+
+.balloon{
+position:fixed;
+bottom:-100px;
+font-size:40px;
+animation:subir 6s linear infinite;
+}
+
+@keyframes subir{
+0%{transform:translateY(0)}
+100%{transform:translateY(-120vh)}
+}
+
+.gift{
+font-size:120px;
+cursor:pointer;
+margin-top:30px;
+}
+
+.cake{
+font-size:120px;
+margin-top:30px;
+animation:shake 1s infinite;
+cursor:pointer;
+}
+
+@keyframes shake{
+0%{transform:rotate(-2deg)}
+50%{transform:rotate(2deg)}
+100%{transform:rotate(-2deg)}
+}
+
+canvas{
+position:fixed;
+top:0;
+left:0;
+pointer-events:none;
+}
+
+.titulo{
+font-size:clamp(30px,5vw,70px);
+text-align:center;
+padding:10px;
+line-height:1.2;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<audio id="music" src="https://www.soundjay.com/human/sounds/applause-8.mp3"></audio>
+
+<div class="container">
+
+<h1>🎮 Missão Aniversário 🎂</h1>
+
+<div class="progress">
+<div class="progress-bar" id="progressBar"></div>
+</div>
+
+<p id="faseTexto">Desafio 1 de 3</p>
+
+<div class="expression" id="expressao"></div>
+
+<input type="number" id="resposta" placeholder="Digite a resposta">
+
+<button onclick="verificar()">Responder</button>
+
+</div>
+
+<canvas id="confetti"></canvas>
+
+<script>
+
+let nome="Thaylla"
+
+let desafios=[
+{exp:"12 + 8 × 2",resp:28},
+{exp:"30 + (6 × 5)",resp:60},
+{exp:"48 + [4 × (3 + 56 ÷ 8 - 5)]",resp:68}
+]
+
+let fase=0
+let presenteAberto=false
+
+function mostrar(){
+
+document.getElementById("expressao").innerText=desafios[fase].exp
+
+document.getElementById("faseTexto").innerText=
+"Desafio "+(fase+1)+" de 3"
+
+document.getElementById("progressBar").style.width=
+((fase)/3*100)+"%"
+
+}
+
+mostrar()
+
+function verificar(){
+
+let valor=Number(document.getElementById("resposta").value)
+
+if(valor===desafios[fase].resp){
+
+fase++
+
+document.getElementById("resposta").value=""
+
+if(fase<3){
+
+mostrar()
+
+}else{
+
+final()
+
+}
+
+}else{
+
+alert("❌ Tente novamente 😊")
+
+}
+
+}
+
+function final(){
+
+let musica=document.getElementById("music")
+if(musica) musica.play().catch(()=>{})
+
+document.body.innerHTML=`
+
+<div style="text-align:center">
+
+<div class="bigName">👑 ${nome} 👑</div>
+
+<h1 class="titulo">🏆 Parabéns Amor das nossas vidas 🏆</h1>
+
+<p style="font-size:32px">
+
+Hoje celebramos não apenas o seu aniversário,<br>
+mas a alegria de ter você em nossas vidas.<br><br>
+
+Que seus 11 anos sejam cheios de sonhos,<br>
+aventuras e muitas felicidades.<br><br>
+
+Você é uma filha incrível,<br>
+inteligente, alegre e cheia de luz.<br><br>
+
+💖 Papai e Mamãe te ama infinitamente! 💖
+
+</p>
+
+<div class="gift" onclick="abrir()">🎁</div>
+
+<p>Clique no presente</p>
+
+</div>
+
+<canvas id="confetti"></canvas>
+`
+
+baloes()
+fogos()
+confetti()
+
+}
+
+function abrir(){
+
+if(presenteAberto) return
+presenteAberto=true
+
+document.querySelector(".gift").innerHTML="💰"
+
+document.body.innerHTML+=`
+
+<h1 style="font-size:60px;color:white">🎁 Você ganhou 100 Reais! 🎁</h1>
+
+<div class="cake" onclick="vela()">🎂🕯️</div>
+
+<p style="color:white">Clique na vela</p>
+
+`
+
+}
+
+function vela(){
+
+let bolo=document.querySelector(".cake")
+if(bolo) bolo.innerHTML="🎂"
+
+document.body.innerHTML+=`
+
+<h1 style="font-size:70px;color:white">🎂 FELIZ ANIVERSÁRIO 🎂</h1>
+
+`
+
+}
+
+function baloes(){
+
+for(let i=0;i<20;i++){
+
+let b=document.createElement("div")
+
+b.className="balloon"
+
+b.style.left=Math.random()*100+"vw"
+
+b.style.animationDuration=(4+Math.random()*4)+"s"
+
+b.innerHTML="🎈"
+
+document.body.appendChild(b)
+
+}
+
+}
+
+function fogos(){
+
+setInterval(()=>{
+
+let f=document.createElement("div")
+
+f.style.position="fixed"
+f.style.left=Math.random()*100+"vw"
+f.style.top=Math.random()*50+"vh"
+f.style.fontSize="50px"
+f.innerHTML="🎆"
+
+document.body.appendChild(f)
+
+setTimeout(()=>f.remove(),1000)
+
+},700)
+
+}
+
+function confetti(){
+
+const canvas=document.getElementById("confetti")
+if(!canvas) return
+
+const ctx=canvas.getContext("2d")
+
+canvas.width=window.innerWidth
+canvas.height=window.innerHeight
+
+let pieces=[]
+
+for(let i=0;i<200;i++){
+
+pieces.push({
+x:Math.random()*canvas.width,
+y:Math.random()*canvas.height-500,
+size:Math.random()*8+4,
+speed:Math.random()*3+2
+})
+
+}
+
+function animate(){
+
+ctx.clearRect(0,0,canvas.width,canvas.height)
+
+for(let p of pieces){
+
+ctx.fillStyle="hsl("+Math.random()*360+",100%,50%)"
+ctx.fillRect(p.x,p.y,p.size,p.size)
+
+p.y+=p.speed
+
+}
+
+requestAnimationFrame(animate)
+
+}
+
+animate()
+
+}
+
+</script>
+
+</body>
+
+</html>
